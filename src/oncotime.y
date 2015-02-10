@@ -3,7 +3,7 @@
   extern char *yytext;
   extern int line;
   int yydebug=1;
-  void yyerror() { printf("Invalid. syntax on line %d  before token %s\n", line, yytext); }
+  void yyerror(char *error) { printf("Invalid. syntax on line %d  before token %s\n", line, yytext); }
 %}
 			
 %union {
@@ -22,7 +22,7 @@
 %token IF ELSE ENDIF THEN FOREACH PRINT PATIENTS
 %token TIMELINE OF IS EVENTS ARE USE GROUP BARCHART ELEMENT
 %token SEQUENCES LIKE LIST NATIVE SCRIPT NOT ARROW POPULATION TO
-%token PERIOD COMMENT PATIENT TYPE FUNC
+%token PERIOD COMMENT PATIENT TYPE FUNC DIAGNOSIS DOCTOR TABLE COUNT BY SEQUENCE LENGTH
 
 			
 %start program		
@@ -155,7 +155,7 @@ events_list:
 
 //Computations that we wish to do
 computation_section:
-		PRINT tIdentifier
+		PRINT printable_statement
 	|	foreach_statement
 	|	declaration_statement
 	|	computation_section PRINT tIdentifier
@@ -164,6 +164,17 @@ computation_section:
        	;
 		
 
+printable_statement:
+		tIdentifier
+	|	tIdentifier '[' tIdentifier ']'
+	|	TIMELINE OF tIdentifier
+	|	DIAGNOSIS OF tIdentifier
+	|	printable_statement ',' tIdentifier
+	|	printable_statement ',' DIAGNOSIS OF tIdentifier
+	|	printable_statement ',' TIMELINE OF tIdentifier
+	|	printable_statement ',' tIdentifier '[' tIdentifier ']'
+	|	tIdentifier '.' LENGTH
+		;
 /* computation_section: */
 /* 		computation_statement */
 /* 	|	computation_section computation_section */
@@ -182,15 +193,23 @@ foreach_statement:
 
 for_item:
 		PATIENT tIdentifier
+	|	TIMELINE OF tIdentifier
+	|	DIAGNOSIS OF tIdentifier
+	|	DOCTOR tIdentifier
+	|	ELEMENT tIdentifier OF tIdentifier
+	|	SEQUENCE tIdentifier LIKE '[' ']'
 	|	tIdentifier
 	;
 
 declaration_statement:
-		TYPE tIdentifier '=' declarable_item
+		LIST tIdentifier '=' SEQUENCES LIKE '['']' //Should this be SEQUENCE?
+	|	TABLE tIdentifier '=' COUNT PATIENTS BY tIdentifier
+		/* TYPE tIdentifier '=' declarable_item */
+
         ;
 
-declarable_item:
-		tIdentifier
+/* declarable_item: */
+/* 		tIdentifier */
 
 
 

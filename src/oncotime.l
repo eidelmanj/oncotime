@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+extern void yyerror(char *error);
 extern int line;
 %}
 
@@ -75,6 +77,8 @@ extern int line;
 "print"      return FUNC;
 "patient"    return PATIENT;
 "patients"   return PATIENTS;
+"doctor"     return DOCTOR;
+"diagnosis"  return DIAGNOSIS;
 "timeline"   return TIMELINE;
 "of"         return OF;
 "is"         return IS;
@@ -87,17 +91,25 @@ extern int line;
 "element"    return ELEMENT;
 
 "sequences"  return SEQUENCES;
+"sequence"   return SEQUENCE;
+
 "like"       return LIKE;
 "list"       return LIST;
 "native"     return NATIVE;
 "script"     return SCRIPT;
 
-"table"      return TYPE;
+
+"count"      return COUNT;
+"by"         return BY;
+
+"table"      return TABLE;
 
 "population" return POPULATION;
 "period"     return PERIOD;
 
 "to"         return TO;
+
+"length"     return LENGTH;
 
 
 
@@ -114,6 +126,6 @@ extern int line;
    return tIdentifier;
 }
 
-. {yyerror(); exit(1);}
+. {yyerror("Error parsing!\n"); exit(1);}
 
 %%
