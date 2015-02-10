@@ -197,16 +197,26 @@ for_item:
 	|	DIAGNOSIS OF tIdentifier
 	|	DOCTOR tIdentifier
 	|	ELEMENT tIdentifier OF tIdentifier
-	|	SEQUENCE tIdentifier LIKE '[' ']'
+	|	SEQUENCE tIdentifier LIKE '[' sequence_section ']'
 	|	tIdentifier
 	;
 
 declaration_statement:
-		LIST tIdentifier '=' SEQUENCES LIKE '['']' //Should this be SEQUENCE?
+		LIST tIdentifier '=' SEQUENCES LIKE '[' sequence_section']' //Should this be SEQUENCE?
+	|	LIST tIdentifier '=' NATIVE '(' id_arg_list ')'
+	|	TABLE tIdentifier '=' NATIVE '(' id_arg_list ')'
 	|	TABLE tIdentifier '=' COUNT PATIENTS BY tIdentifier
 		/* TYPE tIdentifier '=' declarable_item */
 
         ;
+
+
+sequence_section:
+		tIdentifier
+	|	tIdentifier '|' tIdentifier
+	|	'{' id_arg_list '}'
+	|	'{' id_arg_list '}' '*'
+	|	sequence_section ARROW tIdentifier
 
 /* declarable_item: */
 /* 		tIdentifier */
